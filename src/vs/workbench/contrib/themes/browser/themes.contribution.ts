@@ -101,29 +101,6 @@ export class SelectColorThemeAction extends Action {
 	}
 }
 
-export class ToggleColorThemeAction extends Action {
-
-	static readonly ID = 'workbench.action.toggleTheme';
-	static readonly LABEL = localize('toggleTheme.label', "Toggle Color Theme");
-
-	constructor(
-		id: string,
-		label: string,
-		@IWorkbenchThemeService private readonly themeService: IWorkbenchThemeService,
-	) {
-		super(id, label);
-
-		let currentTheme = this.themeService.getColorTheme();
-		//let toggleColorThemes = vscode.workspace.getConfiguration('toggleColorThemes');
-		let themeOptions = ['Dark (Visual Studio)', 'Light (Visual Studio)'];
-		if (currentTheme.id === themeOptions[0]) {
-			this.themeService.setColorTheme(themeOptions[1], undefined);
-		} else {
-			this.themeService.setColorTheme(themeOptions[0], undefined);
-		}
-	}
-}
-
 abstract class AbstractIconThemeAction extends Action {
 	constructor(
 		id: string,
@@ -362,7 +339,6 @@ Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions).registerWorkb
 
 const productIconThemeDescriptor = SyncActionDescriptor.from(SelectProductIconThemeAction);
 Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions).registerWorkbenchAction(productIconThemeDescriptor, 'Preferences: Product Icon Theme', category);
-
 
 const developerCategory = localize({ key: 'developer', comment: ['A developer on Code itself or someone diagnosing issues in Code'] }, "Developer");
 

@@ -1382,8 +1382,7 @@ class SCMInputWidget extends Disposable {
 		@IKeybindingService private keybindingService: IKeybindingService,
 		@IConfigurationService private configurationService: IConfigurationService,
 		@IInstantiationService instantiationService: IInstantiationService,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IStorageService private storageService: IStorageService
+		@IContextViewService private readonly contextViewService: IContextViewService
 	) {
 		super();
 
@@ -1443,8 +1442,6 @@ class SCMInputWidget extends Disposable {
 		this._register(onInputFontFamilyChanged(() => this.inputEditor.updateOptions({ fontFamily: this.getInputEditorFontFamily() })));
 
 		this.onDidChangeContentHeight = Event.signal(Event.filter(this.inputEditor.onDidContentSizeChange, e => e.contentHeightChanged));
-
-		this.storageService = storageService;
 	}
 
 	getContentHeight(): number {

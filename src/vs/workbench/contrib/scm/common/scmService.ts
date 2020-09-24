@@ -73,22 +73,21 @@ class SCMInput implements ISCMInput {
 	private readonly _onDidChangeValidateInput = new Emitter<void>();
 	readonly onDidChangeValidateInput: Event<void> = this._onDidChangeValidateInput.event;
 
-	constructor(readonly repository: ISCMRepository, @IStorageService memory: IStorageService) {
-		this.memory = memory;
+	constructor(readonly repository: ISCMRepository, @IStorageService private storageService: IStorageService) {
+		this.storageService = storageService;
 		this._value = this.storedValue() ?? '';
 	}
-	memory: IStorageService;
 
 	store(value: string) {
 		let root = this.repository.provider.rootUri;
 		if (root) {
-			this.memory.store(root.path, value, StorageScope.WORKSPACE);
+			this.storageService.store(root.path, value, StorageScope.WORKSPACE);
 		}
 	}
 	storedValue() {
 		let root = this.repository.provider.rootUri;
 		if (root) {
-			return this.memory.get(root.path, StorageScope.WORKSPACE) ?? '';
+			return this.storageService.get(root.path, StorageScope.WORKSPACE) ?? '';
 		}
 		return '';
 	}

@@ -3,16 +3,16 @@ set -e
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	realpath() { [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"; }
-	ROOT=$(dirname $(dirname $(realpath "$0")))
+	ROOT=$(dirname "$(dirname "$(realpath "$0")")")
 else
-	ROOT=$(dirname $(dirname $(readlink -f $0)))
+	ROOT=$(dirname "$(dirname "$(readlink -f "$0")")")
 	LINUX_NO_SANDBOX="--no-sandbox" # Electron 6 introduces a chrome-sandbox that requires root to run. This can fail. Disable sandbox via --no-sandbox.
 	LINUX_EXTRA_ARGS="--disable-dev-shm-usage" # Docker container used for prod builds has < 64MB shared memory.
 fi
 
 VSCODEUSERDATADIR=`mktemp -d 2>/dev/null`
 VSCODECRASHDIR=$ROOT/.build/crashes
-cd $ROOT
+cd "$ROOT"
 
 # Figure out which Electron to use for running tests
 if [ -z "$INTEGRATION_TEST_ELECTRON_PATH" ]
@@ -51,17 +51,17 @@ fi
 ./scripts/test.sh --runGlob **/*.integrationTest.js "$@"
 
 # Tests in the extension host
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $ROOT/extensions/vscode-api-tests/testWorkspace --enable-proposed-api=vscode.vscode-api-tests --extensionDevelopmentPath=$ROOT/extensions/vscode-api-tests --extensionTestsPath=$ROOT/extensions/vscode-api-tests/out/singlefolder-tests --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $ROOT/extensions/vscode-api-tests/testworkspace.code-workspace --enable-proposed-api=vscode.vscode-api-tests --extensionDevelopmentPath=$ROOT/extensions/vscode-api-tests --extensionTestsPath=$ROOT/extensions/vscode-api-tests/out/workspace-tests --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $ROOT/extensions/vscode-colorize-tests/test --extensionDevelopmentPath=$ROOT/extensions/vscode-colorize-tests --extensionTestsPath=$ROOT/extensions/vscode-colorize-tests/out --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $ROOT/extensions/markdown-language-features/test-workspace --extensionDevelopmentPath=$ROOT/extensions/markdown-language-features --extensionTestsPath=$ROOT/extensions/markdown-language-features/out/test --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$ROOT"/extensions/vscode-api-tests/testWorkspace --enable-proposed-api=vscode.vscode-api-tests --extensionDevelopmentPath="$ROOT"/extensions/vscode-api-tests --extensionTestsPath="$ROOT"/extensions/vscode-api-tests/out/singlefolder-tests --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions --user-data-dir="$VSCODEUSERDATADIR"
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$ROOT"/extensions/vscode-api-tests/testworkspace.code-workspace --enable-proposed-api=vscode.vscode-api-tests --extensionDevelopmentPath="$ROOT"/extensions/vscode-api-tests --extensionTestsPath="$ROOT"/extensions/vscode-api-tests/out/workspace-tests --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions --user-data-dir="$VSCODEUSERDATADIR"
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$ROOT"/extensions/vscode-colorize-tests/test --extensionDevelopmentPath="$ROOT"/extensions/vscode-colorize-tests --extensionTestsPath="$ROOT"/extensions/vscode-colorize-tests/out --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions --user-data-dir="$VSCODEUSERDATADIR"
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$ROOT"/extensions/markdown-language-features/test-workspace --extensionDevelopmentPath="$ROOT"/extensions/markdown-language-features --extensionTestsPath="$ROOT"/extensions/markdown-language-features/out/test --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions --user-data-dir="$VSCODEUSERDATADIR"
 #"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $ROOT/extensions/typescript-language-features/test-workspace --extensionDevelopmentPath=$ROOT/extensions/typescript-language-features --extensionTestsPath=$ROOT/extensions/typescript-language-features/out/test --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $ROOT/extensions/emmet/out/test/test-fixtures --extensionDevelopmentPath=$ROOT/extensions/emmet --extensionTestsPath=$ROOT/extensions/emmet/out/test --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions  --user-data-dir=$VSCODEUSERDATADIR
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $(mktemp -d 2>/dev/null) --enable-proposed-api=vscode.git --extensionDevelopmentPath=$ROOT/extensions/git --extensionTestsPath=$ROOT/extensions/git/out/test --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
-"$INTEGRATION_TEST_ELECTRON_PATH" $LINUX_NO_SANDBOX $LINUX_EXTRA_ARGS $ROOT/extensions/vscode-notebook-tests/test --enable-proposed-api=vscode.vscode-notebook-tests --extensionDevelopmentPath=$ROOT/extensions/vscode-notebook-tests --extensionTestsPath=$ROOT/extensions/vscode-notebook-tests/out/ --disable-telemetry --crash-reporter-directory=$VSCODECRASHDIR --no-cached-data --disable-updates --disable-extensions --user-data-dir=$VSCODEUSERDATADIR
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$ROOT"/extensions/emmet/out/test/test-fixtures --extensionDevelopmentPath="$ROOT"/extensions/emmet --extensionTestsPath="$ROOT"/extensions/emmet/out/test --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions  --user-data-dir="$VSCODEUSERDATADIR"
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$(mktemp -d 2>/dev/null)" --enable-proposed-api=vscode.git --extensionDevelopmentPath="$ROOT"/extensions/git --extensionTestsPath="$ROOT"/extensions/git/out/test --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions --user-data-dir="$VSCODEUSERDATADIR"
+"$INTEGRATION_TEST_ELECTRON_PATH" "$LINUX_NO_SANDBOX" "$LINUX_EXTRA_ARGS" "$ROOT"/extensions/vscode-notebook-tests/test --enable-proposed-api=vscode.vscode-notebook-tests --extensionDevelopmentPath="$ROOT"/extensions/vscode-notebook-tests --extensionTestsPath="$ROOT"/extensions/vscode-notebook-tests/out/ --disable-telemetry --crash-reporter-directory="$VSCODECRASHDIR" --no-cached-data --disable-updates --disable-extensions --user-data-dir="$VSCODEUSERDATADIR"
 
 # Tests in commonJS (CSS, HTML)
-cd $ROOT/extensions/css-language-features/server && $ROOT/scripts/node-electron.sh test/index.js
-cd $ROOT/extensions/html-language-features/server && $ROOT/scripts/node-electron.sh test/index.js
+cd "$ROOT"/extensions/css-language-features/server && "$ROOT"/scripts/node-electron.sh test/index.js
+cd "$ROOT"/extensions/html-language-features/server && "$ROOT"/scripts/node-electron.sh test/index.js
 
-rm -rf $VSCODEUSERDATADIR
+rm -rf "$VSCODEUSERDATADIR"

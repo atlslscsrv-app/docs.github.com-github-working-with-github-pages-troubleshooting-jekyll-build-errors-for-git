@@ -3,12 +3,12 @@
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	realpath() { [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"; }
-	ROOT=$(dirname $(dirname $(realpath "$0")))
+	ROOT=$(dirname "$(dirname "$(realpath "$0")")")
 else
-	ROOT=$(dirname $(dirname $(readlink -f $0)))
+	ROOT=$(dirname "$(dirname "$(readlink -f "$0")")")
 fi
 
-cd $ROOT
+cd "$ROOT"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	NAME=`node -p "require('./product.json').nameLong"`
@@ -26,12 +26,12 @@ yarn electron
 
 # Unit Tests
 if [[ "$OSTYPE" == "darwin"* ]]; then
-	cd $ROOT ; ulimit -n 4096 ; \
+	cd "$ROOT" ; ulimit -n 4096 ; \
 		ELECTRON_ENABLE_LOGGING=1 \
 		"$CODE" \
 		test/unit/electron/index.js "$@"
 else
-	cd $ROOT ; \
+	cd "$ROOT" ; \
 		ELECTRON_ENABLE_LOGGING=1 \
 		"$CODE" \
 		test/unit/electron/index.js --no-sandbox --disable-dev-shm-usage "$@" # Electron 6 introduces a chrome-sandbox that requires root to run. This can fail. Disable sandbox via --no-sandbox.

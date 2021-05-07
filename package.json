@@ -168,7 +168,7 @@
     "tsec": "googleinterns/tsec",
     "typescript": "^4.1.0-dev.20200918",
     "typescript-formatter": "7.1.0",
-    "underscore": "^1.8.2",
+    "underscore": "^1.12.1",
     "vinyl": "^2.0.0",
     "vinyl-fs": "^3.0.0",
     "vsce": "1.48.0",
